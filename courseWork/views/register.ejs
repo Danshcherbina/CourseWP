@@ -1,0 +1,48 @@
+<!doctype html>
+
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+
+  <title>Registration</title>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/styles.css?v=1.0">
+</head>
+
+
+<body>
+	<div class='container'>
+		<h1>Registration</h1>
+		<form action='/register' method='POST' enctype="multipart/form-data">
+			Username:
+      <br/>
+			<input type='text' name='username' />
+			<br/>
+      E-mail:
+      <br/>
+      <input type='text' name='email' />
+    <br/>
+			Password:
+      <br/>
+			<input type='password' name='password' />
+			<br/>
+      Repeat password:
+      <br/>
+      <input type='password' name='password2' />
+    <br/>
+    Load Avatar:<br />
+    <input type='file' name='avatar' accept="image/*" />
+    <br />
+
+    <br /><br />
+
+			<input type="submit" value='Confirm' />
+		</form>
+	</div>
+  <script src="js/scripts.js"></script>
+</body>
+</html>
