@@ -55,7 +55,31 @@
       <br />
       <input type='submit' value='Update' />
       <br /><br />
+    </form>
     </p>
+
+  </div>
+  <div class='container'>
+    <h4>All users articles here:</h4>
+      <% var tempArr = [];%>
+      <%  for (var i in ar) { %>
+
+      <%var temp = ar[i].acategory %>
+
+      <%  if(tempArr.indexOf(ar[i].acategory)==-1){  %>
+
+      <%=ar[i].acategory+':'%><br>
+      <% for (var j in ar) { %>
+      <% if(ar[j].acategory == temp){%>
+    <a href = <%=ar[j].address%> ><%=ar[j].aname%></a><br>
+      <% } %>
+      <% }; %>
+      <%}%>
+      <% tempArr[i] = ar[i].acategory%>
+      <% }; %>
+
+
+
 
   </div>
 </body>

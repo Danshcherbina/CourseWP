@@ -19,6 +19,10 @@ var User = new Schema({
     image : {
       type : String
     },
+    admin : {
+      type : Boolean,
+      required : true,
+    },
 });
 
 var UserTemplate = mongoose.model('users', User);

@@ -2,7 +2,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Main</title>
+  <title>List</title>
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
 
@@ -15,24 +15,35 @@
     <% if (!user) { %>
                   <a href = '/login'>Login</a>
               <% } else { %>
-                  <h7>Hello, <%=user.username%> ,</h7>
-                  <a href = '/user_profile'>Your profile</a><br>
+                 <h7>Hello, <%=user.username%> ,</h7>
+                 <a href = '/user_profile'>Your profile</a><br>
+
                   <a href = '/logout'>Logout</a>
 
               <% } %>
   </div>
-
   <div class='container'>
-    <h1>Welcome!</h1>
-    <p>
-      <a href = '/articles'>Articles</a><br>
-      <% if (!user) { %>
+    <h1>All articles here!</h1>
+    <% var tempArr = [];%>
+    <%  for (var i in ar) { %>
 
-                <% } else { %>
-                    <a href = '/new_article'>Create article</a><br>
+      <%var temp = ar[i].acategory %>
 
-                <% } %>
-    </p>
+      <%  if(tempArr.indexOf(ar[i].acategory)==-1){  %>
+
+        <%=ar[i].acategory+':'%><br>
+        <% for (var j in ar) { %>
+          <% if(ar[j].acategory == temp){%>
+          <a href = <%=ar[j].address%> ><%=ar[j].aname%></a><br>
+          <% } %>
+          <% }; %>
+        <%}%>
+          <% tempArr[i] = ar[i].acategory%>
+        <% }; %>
+
+
+
+
   </div>
 </body>
 </html>

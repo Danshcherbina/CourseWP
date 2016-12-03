@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var mpromise = require('mpromise');
 var crypto = require('crypto');
 var UserTemplate = require('../user_template').UserTemplate;
+var ArticleTemplate = require('../article_template').ArticleTemplate;
 
 var mongo_db = 'mongodb://localhost/kursach';
 
@@ -92,30 +93,100 @@ router.get('/', function(req, res, next) {
 
 router.get('/new_article', function(req, res, next) {
 	if(req.user){
-	 res.render('new_article', {user : req.user});
+
+	ArticleTemplate.find({},{acategory : true, _id : false}).exec(
+		function(err,articles){
+			if(err){
+				console.log('Error.');
+			}else{
+
+
+				var row='';
+				for (var i in articles) {
+						 row+= articles[i].acategory+',';
+					 };
+						 row = row.slice(0, -1);
+					res.render('new_article', {user : req.user, categorys : row});
+			}
+
+	})
  } else {res.end('Nope');}
 });
 
+router.get('/articles', function(req,res,next){
+	ArticleTemplate.find({})
+	.exec(function(err,articles){
+		if(err){res.send('err');}else{
+
+
+			res.render('articles', {user : req.user, ar : articles});
+		}
+
+	})
+
+
+
+});
 
 /* GET register page. */
 router.get('/register', (req, res) => {
   res.render('register');
 });
 
+router.post('/articles/:title', function(req,res){
+	if(req.user.admin == true){
+	var temp = '/articles/'+ req.params.title;
+	ArticleTemplate.findOneAndRemove({
+		address : temp
+	},function(err,article){
+		if(err){
+			res.send('Delete error')
+		}else{
+			res.redirect('/');
+		}
+	})
+}else{
+	res.end('Nope');
+}
+});
+
+router.get('/articles/:title', function(req,res){
+//	console.log('here');
+ 	var temp = '/articles/'+ req.params.title;
+	console.log(temp);
+	ArticleTemplate.findOne({
+		address : temp
+	})
+	.exec(function(err,article){
+		if(err){res.send('err occured');}
+		if(article){
+			console.log(article);
+			res.render('article', {user : req.user,ar : article});
+		}else{
+			res.send('Not found');
+		}
+	})
+})
+
 /* GET login page. */
 router.get('/login', (req, res) => {
   res.render('login');
 });
 
+/* GET register_success page. */
 router.get('/register_success', (req, res) => {
   res.render('register_success');
 });
 
+/* GET logout.
+Only for registered users*/
 router.get('/logout', (req, res) => {
-	req.logout();
+	if(req.user){req.logout();
 	res.redirect('/');
+	} else {res.end('Nope');}
 });
 
+/*POST login*/
 router.post('/login',
 	passport.authenticate('local', { failureRedirect: '/login-error' }),
   (req, res) => res.redirect('/'));
@@ -125,10 +196,27 @@ router.get('/login-error', (req, res) => res.render('error', {error : 'Login err
 
 router.get('/user_profile', (req, res) => {
 	if(req.user){
-		res.render('user_profile', {user : req.user});
+    ArticleTemplate.find({aauthor: req.user.username})
+        .exec(function(err,articles){
+            if(err){res.send('err');}else{
+
+
+                res.render('user_profile', {user : req.user, ar : articles});
+            }
+
+        })
 	} else {res.end('Nope');}
 });
 
+router.get('/article_success', (req, res) => {
+	if(req.user){
+	res.render('article_success' ,  {user : req.user});
+	} else {res.end('Nope');}
+});
+
+
+
+/*POST ubdate profile.*/
 router.post('/user_profile',(req,res) => {
 	if(req.body.email&&req.body.password&&
 		req.body.password2&&req.body.password === req.body.password2){
@@ -162,6 +250,58 @@ router.post('/user_profile',(req,res) => {
 
 
 
+router.post('/new_article',(req,res) =>{
+
+	console.log('Here');
+
+	if(req.body.atitle&&req.body.acategory){
+			console.log('Here2');
+
+			ArticleTemplate.findOne({aname : req.body.atitle},function(err,article){
+			if(err) return next(err);
+			if(article){
+			res.end("Such article title exists");
+		}else{
+
+			var aObj = req.files.image;
+			var base64String = aObj.data.toString('base64');
+
+			var adressObj = '/articles/'+req.body.atitle.replace(/ /g,'_');
+
+
+
+
+			var new_article = new ArticleTemplate({
+				aname : req.body.atitle,
+				address : adressObj,
+				acategory : req.body.acategory,
+				asummary :  req.body.asummary,
+				atext :  req.body.atext,
+				aauthor : req.user.username,
+				image : base64String,
+				});
+
+				new_article.save((err) => {
+					if(!err){
+
+						res.redirect('/article_success');
+
+					} else {
+						console.log(err);
+						if(err.name == 'ValidationError') {
+										res.render('error', {error : '400. Validation error'});
+								 } else {
+										 res.render('error', {error : '500. Server error'});
+								 }
+					}
+				});
+		}
+			})
+		}else{
+			res.redirect('/new_article');
+		}
+});
+
 /* POST register. */
 router.post('/register', (req, res) => {
 if(req.body.username&&req.body.email&&req.body.password&&
@@ -181,7 +321,8 @@ if(req.body.username&&req.body.email&&req.body.password&&
 		      username : req.body.username,
 		      email : req.body.email,
 		      password : hash(req.body.password),
-		      image : base64String
+		      image : base64String,
+					admin : false,
 		      });
 
 					new_user.save((err) => {

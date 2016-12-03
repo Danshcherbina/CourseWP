@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Creator</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class='container'>
+    <h1>Welcome, <%= user.username%>!</h1>
+
+    <form action='/new_article' method='POST' enctype="multipart/form-data">
+      Title:
+      <br/>
+      <input type='text' name='atitle' />
+      <br/>
+      Existing categories:<br/>
+      <%=categorys%><br>
+      Category:
+      <br/>
+      <input type='text' name='acategory' />
+      <br/>
+      Article summary:
+      <br/>
+      <textarea rows="5" cols="100" name="asummary"></textarea>
+      <br/>
+      Article text:
+      <br/>
+      <textarea rows="10" cols="100" name="atext"></textarea>
+      <br/>
+
+    Article image:<br />
+    <input type='file' name='image' accept="image/*" />
+    <br />
+
+    <br /><br />
+
+      <input type="submit" value='Create article.' />
+    </form>
+
+
+
+
+  </div>
+</body>
+</html>

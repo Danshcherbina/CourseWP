@@ -2,7 +2,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Main</title>
+  <title><%=ar.aname%></title>
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
 
@@ -17,22 +17,34 @@
               <% } else { %>
                   <h7>Hello, <%=user.username%> ,</h7>
                   <a href = '/user_profile'>Your profile</a><br>
+                  <% if (user.admin == true) { %>
+                  <form action= <%=ar.address%> method='POST'>
+                    <input type="submit" value='Delete' />
+                  </form>
+                    <%}%>
+
                   <a href = '/logout'>Logout</a>
 
               <% } %>
   </div>
+<div class='container'>
+  <p>
+<h2><%=ar.aname%></h2><br>
+    <h7>Author: <%=ar.aauthor%></h7><br>
+<%=ar.acategory%><br>
+<%=ar.asummary%><br>
+<% if (ar.image) { %>
+              <img src='data:image/jpg;base64,<%= ar.image %>' width=120 height=120 alt="left" /><br>
+          <% } else { %>
+              <p>
+                  No image<br>
+              </p>
+          <% } %>
+          <hr>
+          <%=ar.atext%><br>
 
-  <div class='container'>
-    <h1>Welcome!</h1>
-    <p>
-      <a href = '/articles'>Articles</a><br>
-      <% if (!user) { %>
+</p>
+</div>
 
-                <% } else { %>
-                    <a href = '/new_article'>Create article</a><br>
-
-                <% } %>
-    </p>
-  </div>
 </body>
 </html>
