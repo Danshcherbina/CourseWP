@@ -27,7 +27,7 @@ var Article = new Schema({
       type : String,
       required : true,
     },
-    aauthor : {
+    autor : {
       type : String,
     },
     image : {

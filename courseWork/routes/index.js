@@ -7,7 +7,9 @@ var crypto = require('crypto');
 var UserTemplate = require('../user_template').UserTemplate;
 var ArticleTemplate = require('../article_template').ArticleTemplate;
 
-var mongo_db = 'mongodb://localhost/kursach';
+var mongo_db ='mongodb://garmrr:kazzak80@ds129179.mlab.com:29179/heroku_xvs5zgf6/kursach';
+//var mongo_db = 'mongodb://localhost/kursach';
+
 
 mongoose.connect(mongo_db);
 
@@ -88,49 +90,41 @@ function hash(pass){
 /* GET home page. */
 
 router.get('/', function(req, res, next) {
-	 res.render('main', {user : req.user});
+    res.render('main', {user : req.user});
 });
 
 router.get('/new_article', function(req, res, next) {
-	if(req.user){
+    if(req.user){
 
-	ArticleTemplate.find({},{acategory : true, _id : false}).exec(
-		function(err,articles){
-			if(err){
-				console.log('Error.');
-			}else{
+        ArticleTemplate.find({},{acategory : true, _id : false}).exec(
+            function(err,articles){
+                if(err){
+                    console.log('Error.');
+                }else{
 
 
-				var row='';
-				for (var i in articles) {
-						 row+= articles[i].acategory+',';
-					 };
-						 row = row.slice(0, -1);
-					res.render('new_article', {user : req.user, categorys : row});
-			}
 
-	})
- } else {res.end('Nope');}
+
+                    res.render('new_article', {user : req.user, articles : articles, errorMessage:0});
+                }
+
+            })
+    } else {res.end('Nope');}
 });
 
 router.get('/articles', function(req,res,next){
-	ArticleTemplate.find({})
-	.exec(function(err,articles){
-		if(err){res.send('err');}else{
-
-
-			res.render('articles', {user : req.user, ar : articles});
-		}
-
-	})
-
-
-
+    ArticleTemplate.find({})
+        .exec(function(err,articles){
+            if(err){res.send('err');}else{
+                var list="";
+                res.render('articles', {user : req.user, ar : articles, aList : list});
+            }
+        })
 });
 
 /* GET register page. */
 router.get('/register', (req, res) => {
-  res.render('register');
+    res.render('register',{errorMessage : 0 });
 });
 
 router.post('/articles/:title', function(req,res){
@@ -148,6 +142,72 @@ router.post('/articles/:title', function(req,res){
 }else{
 	res.end('Nope');
 }
+});
+
+router.get('/update_article/articles/:title', function(req,res){
+
+    var temp = '/articles/'+ req.params.title;
+    ArticleTemplate.findOne({
+        address : temp
+    })
+        .exec(function(err,article){
+            if(err){res.send('err occured');}
+            if(article){
+                if(req.user.username == article.autor||req.user.admin==true){
+
+                    ArticleTemplate.find({},{acategory : true, _id : false}).exec(
+                        function(err,articles){
+                            if(err){
+                                console.log('Error.');
+                            }else{
+
+
+
+
+                                res.render('update_article', {user : req.user, articles : articles,ar : article, errorMessage:0});
+                            }
+
+                        })
+
+                } else {res.end('Nope');}
+            }else{
+                res.send('Not found');
+            }
+        })
+})
+
+router.post('/update_article/articles/:title',(req,res) =>{
+
+    var temp = '/articles/'+ req.params.title;
+	if(req.body.acategory){
+
+    var aObj = req.files.image;
+    var base64String = aObj.data.toString('base64');
+    //	if (!base64String) base64String=req.user.image;
+
+    ArticleTemplate.findOneAndUpdate({address : temp},{
+            $set:{
+                acategory : req.body.acategory,
+                asummary : req.body.asummary,
+                atext : req.body.atext,
+                //image : base64String
+
+            }},
+        {new : true},
+        function(err,newPost){
+            if(err){
+                console.log('Update error!');
+            }else{
+                console.log('Update success!');
+
+                res.redirect(temp);
+
+            }
+        }
+    )
+    }else{
+    res.redirect('/update_article'+ temp);
+		}
 });
 
 router.get('/articles/:title', function(req,res){
@@ -248,8 +308,6 @@ router.post('/user_profile',(req,res) => {
 		}
 });
 
-
-
 router.post('/new_article',(req,res) =>{
 
 	console.log('Here');
@@ -277,7 +335,7 @@ router.post('/new_article',(req,res) =>{
 				acategory : req.body.acategory,
 				asummary :  req.body.asummary,
 				atext :  req.body.atext,
-				aauthor : req.user.username,
+				autor : req.user.username,
 				image : base64String,
 				});
 
@@ -301,6 +359,34 @@ router.post('/new_article',(req,res) =>{
 			res.redirect('/new_article');
 		}
 });
+
+router.get('/search', function(req, res){
+
+    ArticleTemplate.find({"aname" : new RegExp(req.query.search, 'i')}).exec((err, articles) => {
+        if(!err) {
+        res.render('search',{user : req.user , articles : articles})
+    } else {
+        res.render('error',{error : '500: server error'})
+    }
+});
+});
+
+router.get('/searching', function(req, res){
+
+    ArticleTemplate.find({"aname" :  new RegExp(req.query.search, 'i') }).exec((err, articles) => {
+
+        console.log('Here2');
+    if(!err) {
+        //console.log('Yep');
+        res.send(JSON.stringify(articles));
+
+    } else {
+        //console.log('Nope');
+        res.send(JSON.stringify(err));
+    }
+});
+});
+
 
 /* POST register. */
 router.post('/register', (req, res) => {

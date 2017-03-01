@@ -43,20 +43,25 @@ router.post('/', function(req, res) {
 
 
 router.delete('/:id', (req, res) => {
+
+    if(req.user.status === 'admin'){
     UserTemplate.findById(req.params.id, (err, user) => {
-      if(!user){
+        if(!user){
         res.statusCode = 404;
         res.send({error : 'Not Found'});
-      }
-      user.remove((err) => {
+    }
+    user.remove((err) => {
         if(!err){
-          res.send({Status : 'OK'});
-        } else {
-          res.statusCode = 500;
-          res.send({error : 'Server Error'});
-        }
-      });
-    });
+        res.send({Status : 'OK'});
+    } else {
+        res.statusCode = 500;
+        res.send({error : 'Server Error'});
+    }
 });
+});
+} else {
+    res.send({error: "Access is denied"});
+}
 
+});
 module.exports = router;

@@ -3,47 +3,74 @@
 
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
 
 
-  <title>Registration</title>
+    <title>Registration</title>
+    <link href='/stylesheets/style.css' type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/styles.css?v=1.0">
+    <script type="text/javascript" src="javascripts/bootstrap-filestyle.min.js"> </script>
+
 </head>
 
 
 <body>
-	<div class='container' align='center'>
-		<h1>Registration</h1>
-		<form action='/register' method='POST' enctype="multipart/form-data">
-			Username:
-      <br/>
-			<input type='text' name='username' />
-			<br/>
-      E-mail:
-      <br/>
-      <input type='text' name='email' />
-    <br/>
-			Password:
-      <br/>
-			<input type='password' name='password' />
-			<br/>
-      Repeat password:
-      <br/>
-      <input type='password' name='password2' />
-      <br/>
-      Load Avatar:<br/>
-      <input type='file' name='avatar' accept="image/*" />
-      <br/>
+<div class="parent">
+    <div class="block1">
+        <h1>Registration</h1>
+        <div class="parent1">
+            <form action='/register' method='POST' enctype="multipart/form-data" class="input-group">
+                Username:
+                <br/>
+                <div class="form-group has-feedback usernameBlock">
+                    <input type='text' name='username' class="form-control" id="username" aria-describedby="inputSuccess2Status"/>
+                </div>
+                <br/><br/>
+                E-mail:
+                <br/>
+                <div class="form-group has-feedback emailBlock" >
+                    <input type='text' name='email' class="form-control" id="email" aria-describedby="inputSuccess2Status" />
+                </div>
+                <br/><br/>
+                Password:
+                <br/>
 
-      <br/>
-      <br/>
+                <div class="form-group has-feedback passwordBlock">
+                    <input type='password' name='password' class="form-control" id="password" aria-describedby="inputSuccess2Status"/>
+                </div>
+                <br/><br/>
+                Repeat password:
+                <br/>
+                <div class="form-group has-feedback password2Block">
+                    <input type='password' name='password2' class="form-control" id="password2" aria-describedby="inputSuccess2Status"/>
+                </div>
+                <br/><br/>
+                Load Avatar:<br/>
+                <input type="file"  name='avatar' class="filestyle" data-buttonBefore="true"  accept="image/*">
 
-			<input type="submit" value='Confirm' />
-		</form>
-	</div>
-  <script src="js/scripts.js"></script>
+
+                <%if(errorMessage == 0){%>
+                <br/>
+                <%}%>
+                <%if(errorMessage == 1){%>
+                <div class="er">Invalide data.</div>
+                <%}%>
+                <%if(errorMessage == 2){%>
+                <div class="er">Such username exists.</div>
+                <%}%>
+
+                <br/>
+                <input type="submit" class="but" value='Confirm' />
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="/javascripts/register.js"></script>
+
 </body>
 </html>

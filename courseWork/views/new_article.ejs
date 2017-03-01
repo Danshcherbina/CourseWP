@@ -1,51 +1,211 @@
+<!doctype html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <title>New article</title>
 
-  <title>Creator</title>
+  <meta charset="utf-8">
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
 
+
+  <link  href='/stylesheets/style.css' type="text/css" rel="stylesheet">
+  <script href="../node_modules/ejs/ejs.js"></script>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../dist/css/jasny-bootstrap.min.css" rel="stylesheet">
+  <script type="text/javascript" src="javascripts/bootstrap-filestyle.min.js"> </script>
+
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/i18n/defaults-*.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap-filestyle.min.js"> </script>
+  <link href='/stylesheets/style.css' type="text/css" rel="stylesheet">
+
+  <link href='/stylesheets/style.css' type="text/css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
   <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/css/jasny-bootstrap.min.css">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/js/jasny-bootstrap.min.js"></script>
+
+
+  <script type="text/javascript" src="javascripts/bootstrap-filestyle.min.js"> </script>
+
+  <script src="/javascripts/new_article.js"></script>
 </head>
-
 <body>
-  <div class='container'>
-    <h1>Welcome, <%= user.username%>!</h1>
+<header>
+  <nav class="navbar navbar-fixed-top navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
 
-    <form action='/new_article' method='POST' enctype="multipart/form-data">
-      Title:
-      <br/>
-      <input type='text' name='atitle' />
-      <br/>
-      Existing categories:<br/>
-      <%=categorys%><br>
-      Category:
-      <br/>
-      <input type='text' name='acategory' />
-      <br/>
-      Article summary:
-      <br/>
-      <textarea rows="5" cols="100" name="asummary"></textarea>
-      <br/>
-      Article text:
-      <br/>
-      <textarea rows="10" cols="100" name="atext"></textarea>
-      <br/>
+        <a class="navbar-brand" href="/">Smthsite</a>
+      </div>
 
-    Article image:<br />
-    <input type='file' name='image' accept="image/*" />
-    <br />
+      <div class="navbar-offcanvas offcanvas">
 
-    <br /><br />
+        <ul class="nav navbar-nav">
+          <li><a href = '/articles'><span class="glyphicon glyphicon-list"></span> Article list</a></li>
 
-      <input type="submit" value='Create article.' />
-    </form>
+            <% if (!user) { %>
+          <li><a href = '/new_article' style="pointer-events: none;  cursor: default;"><span class="glyphicon glyphicon-plus"></span> Create article</a></li>
+            <% } else { %>
+          <li><a href = '/new_article'><span class="glyphicon glyphicon-plus"></span> Create article</a></li>
+            <% } %>
 
 
+        </ul>
 
+
+        <ul class="nav navbar-nav navbar-right">
+            <% if (!user) { %>
+          <li><a href = '/register'><span class="glyphicon glyphicon-user"></span> Sign in</a></li>
+          <li><a id="login" href = '/login'><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            <% } else { %>
+          <li><a href = '/logout' style="pointer-events: none;  cursor: default"><%= user.username%></a></li>
+          <li><a href = '/logout'><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+          <li><a href = '/user_profile'><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+            <% } %>
+        </ul>
+
+
+
+      </div><!--/.nav-collapse -->
+    </div>
+  </nav>
+</header>
+
+
+
+
+
+<div class='container' style="margin-top : 20px;">
+  <div class="jumbotron col-lg-12"  >
+    <div class="Lists">
+      <h2 align="center">Welcome <%= user.username%>!</h2>
+      <p align="center">Thank you, for assistance in site development.</p>
+    </div>
+    <br>
+    <br>
+    <div class="jumbotron col-lg-7">
+      <div class="Lists">
+        <form action='/new_article' method='POST' enctype="multipart/form-data" class="input-group">
+
+
+          <div class="form-group  has-feedback atitle">
+            <label for="atitle">Title</label>
+            <input type='text' name='atitle' class="form-control" style="background-color: #FFFFFF;"  id="atitle" aria-describedby="inputSuccess2Status"/>
+          </div>
+
+          <div class="form-group articlecontainer has-feedback " id="1" >
+            <font color="red" style="visibility: hidden;">Костыль</font>
+          </div>
+
+
+
+
+            <%var tempArr = [];
+            var row='';%>
+
+
+
+
+
+
+
+          <div class="form-group  has-feedback acategory">
+            <label for="acategory">Category</label>
+            <input type='text' name='acategory' class="form-control" id="acategory" aria-describedby="inputSuccess2Status"/>
+          </div>
+
+          <div class="form-group articlecontainer has-feedback " id="2" >
+            <font color="red" style="visibility: hidden;">Костыль</font>
+          </div>
+
+          <div class="form-group  has-feedback asummary" >
+            <label for="asummary"><br>Article summary</label>
+            <textarea rows="5" cols="100" style="resize: none; " name="asummary" class="form-control" id="asummary" aria-describedby="inputSuccess2Status"></textarea>
+          </div>
+          <div class="form-group articlecontainer has-feedback " id="3" >
+            <font color="red" style="visibility: hidden;">Костыль</font>
+          </div>
+
+
+
+
+          <div class="form-group articlecontainer has-feedback atext" >
+            <label for="atext"><br>Article text</label>
+            <textarea rows="10" cols="100" name="atext" style="resize: none; " class="form-control" id="atext" aria-describedby="inputSuccess2Status"></textarea>
+          </div>
+          <div class="form-group articlecontainer has-feedback " id="4" >
+            <font color="red" style="visibility: hidden;">Костыль</font>
+          </div>
+
+
+
+          <div class="form-group articlecontainer has-feedback " >
+
+            <label for="image"><br>Article image</label>
+
+            <input type="file"  name='image' class="filestyle" data-buttonBefore="true"  accept="image/*">
+
+          </div>
+          <div class="form-group articlecontainer has-feedback " id="res" >
+
+
+
+            <label for="image"><font color="red" style="visibility: hidden;">Костыль</font></label>
+          </div>
+
+            <%if(errorMessage == 0){%>
+          <br/>
+            <%}%>
+            <%if(errorMessage == 1){%>
+          <div class="er">Such name exists.</div>
+            <%}%>
+            <%if(errorMessage == 2){%>
+          <div class="er">Invalide data.</div>
+            <%}%>
+
+          <br />
+          <input type="submit" class="but" value='Create article.' />
+        </form>
+      </div>
+
+
+    </div>
+
+    <div class="jumbotron col-lg-5" >
+      <div class="form-group articlecontainer has-feedback " >
+        <div class="alert">
+          <label for="image" align ="center">Recommendations for creation</label>
+          <hr>
+          <ul>
+            <li>The title and category should consist of english letters and spaces.</li>
+            <li>You can select an existing category, leave the field "Category" empty in this case.</li>
+            <li>If you want to create a new category, fill field "Category".</li>
+            <li>All fields are required.</li>
+            <li>If you don't select a picture, it will be the standard.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
   </div>
+
+</div>
+
+
+<script src="/javascripts/check.js"></script>
+
+
 </body>
 </html>

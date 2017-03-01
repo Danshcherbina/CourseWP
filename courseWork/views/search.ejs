@@ -1,0 +1,113 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <title>Main</title>
+
+  <meta charset="utf-8">
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link  href='/stylesheets/style.css' type="text/css" rel="stylesheet">
+  <script href="../node_modules/ejs/ejs.js"></script>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../dist/css/jasny-bootstrap.min.css" rel="stylesheet">
+
+
+</head>
+<body>
+   <header>
+  <nav class="navbar navbar-fixed-top navbar-default">
+     <div class="container-fluid">
+          <div class="navbar-header">
+
+            <a class="navbar-brand" href="/">Main</a>
+          </div>
+
+          <div class="navbar-offcanvas offcanvas">
+
+            <ul class="nav navbar-nav">
+              <li><a href = '/articles'><span class="glyphicon glyphicon-list"></span> Article list</a></li>
+
+              <% if (!user) { %>
+              <li><a href = '/new_article' style="pointer-events: none;  cursor: default;"><span class="glyphicon glyphicon-plus"></span> Create article</a></li>
+                <% } else { %>
+              <li><a href = '/new_article'><span class="glyphicon glyphicon-plus"></span> Create article</a></li>
+               <% } %>
+
+
+            </ul>
+
+            <form action='/search' method='GET' class="navbar-form navbar-left" id="search_form">
+         <div class="input-group">
+           <input type="text" class="form-control input-sm" placeholder="Search" id="search" name="search">
+             <div class="input-group-btn">
+               <button class="btn btn-default btn-sm" type="submit">
+                 <i class="glyphicon glyphicon-search"></i>
+               </button>
+             </div>
+           </div>
+          </form>
+
+          <ul class="nav navbar-nav navbar-right">
+          <% if (!user) { %>
+                        <li><a href = '/register'><span class="glyphicon glyphicon-user"></span> Sign in</a></li>
+                        <li><a id="login" href = '/login'><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <% } else { %>
+                        <li><a href = '/logout' style="pointer-events: none;  cursor: default"><%= user.username%></a></li>
+                        <li><a href = '/logout'><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                        <li><a href = '/user_profile'><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                    <% } %>
+        </ul>
+
+
+
+          </div><!--/.nav-collapse -->
+        </div>
+        </nav>
+ </header>
+
+
+
+
+
+  <div class='container' style="margin-top : 20px;">
+
+    <div  class="col-lg-12">
+        <div class="Lists" style="background-color: #F0F8FF;">
+          <label>Enter a query and press enter<br></label>
+      <input type="search" class="form-control" style="filter: brightness(100%);" placeholder="Search..." id="searching">
+    </div>
+    </div>
+    <br><br>
+
+    <div class="col-lg-12" id="results">
+        <div class="Lists" style="margin-top : 20px; background-color: #F0F8FF;">
+          <label>Founded results<br></label>
+          <% if (articles.length === 0) { %>
+            <div class="panel panel-warning">
+                <div class="panel-body">No matches were found for your query.</div>
+            </div>
+                    <% } else { %>
+                      <% for(var i = 0; i < articles.length; i++) { %>
+                        <div class="panel panel-default">
+                          <div class="panel-heading"><a href="<%= articles[i].address %>"><%= articles[i].aname %></a></div>
+                          <div class="panel-body"><%= articles[i].acategory %></div>
+
+                        </div>
+                          <% } %>
+                    <% } %>
+                  </div>
+</div>
+</div>
+
+  </div>
+  <script src="/javascripts/check.js"></script>
+  <script src="/javascripts/search.js"></script>
+
+
+</body>
+</html>

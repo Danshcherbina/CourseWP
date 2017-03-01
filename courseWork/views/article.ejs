@@ -3,48 +3,141 @@
   <meta charset="utf-8">
 
   <title><%=ar.aname%></title>
-  <meta name="description" content="The HTML5 Herald">
-  <meta name="author" content="SitePoint">
+    <meta charset="utf-8">
+    <meta name="description" content="The HTML5 Herald">
+    <meta name="author" content="SitePoint">
 
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link  href='/stylesheets/style.css' type="text/css" rel="stylesheet">
+    <script href="../node_modules/ejs/ejs.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../dist/css/jasny-bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="javascripts/bootstrap-filestyle.min.js"> </script>
 </head>
 
 <body>
-  <div class='container' align = "right">
-    <% if (!user) { %>
-                  <a href = '/login'>Login</a>
-              <% } else { %>
-                  <h7>Hello, <%=user.username%> ,</h7>
-                  <a href = '/user_profile'>Your profile</a><br>
-                  <% if (user.admin == true) { %>
-                  <form action= <%=ar.address%> method='POST'>
-                    <input type="submit" value='Delete' />
-                  </form>
+<header>
+    <nav class="navbar navbar-fixed-top navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+
+                <a class="navbar-brand" href="/">Kursachepedia</a>
+            </div>
+
+            <div class="navbar-offcanvas offcanvas">
+
+                <ul class="nav navbar-nav">
+                    <li><a href = '/articles'><span class="glyphicon glyphicon-list"></span> Article list</a></li>
+
+                    <% if (!user) { %>
+                    <li><a href = '/new_article' style="pointer-events: none;  cursor: default;"><span class="glyphicon glyphicon-plus"></span> Create article</a></li>
+                    <% } else { %>
+                    <li><a href = '/new_article'><span class="glyphicon glyphicon-plus"></span> Create article</a></li>
+                    <% } %>
+
+                    <% if (user&&(user.username == ar.autor||user.admin == true)) { %>
+
+                    <li><a href = '/update_article<%=ar.address%>'><span class="glyphicon glyphicon-fullscreen"></span> Update article</a></li>
+
+                    <%if (user.admin == true||user.name==ar.autor) {%>
+                    <form  class="navbar-form navbar-left" action= <%=ar.address%> method='POST'>
+                        <button class="btn btn-default btn-sm" type="submit" value="Delete">
+                            <i class="glyphicon glyphicon glyphicon-remove"></i>
+                            Delete article
+                        </button>
+                    </form>
+
                     <%}%>
 
-                  <a href = '/logout'>Logout</a>
+                    <%}%>
 
-              <% } %>
-  </div>
-<div class='container'>
-  <p>
-<h2><%=ar.aname%></h2><br>
-    <h7>Author: <%=ar.aauthor%></h7><br>
-<%=ar.acategory%><br>
-<%=ar.asummary%><br>
-<% if (ar.image) { %>
-              <img src='data:image/jpg;base64,<%= ar.image %>' width=120 height=120 alt="left" /><br>
-          <% } else { %>
-              <p>
-                  No image<br>
-              </p>
-          <% } %>
-          <hr>
-          <%=ar.atext%><br>
 
-</p>
+                </ul>
+
+                <form action='/search' method='GET' class="navbar-form navbar-left" id="search_form">
+                    <div class="input-group">
+                        <input type="text" class="form-control input-sm" placeholder="Search" id="search" name="search">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default btn-sm" type="submit">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <% if (!user) { %>
+                    <li><a href = '/register'><span class="glyphicon glyphicon-user"></span> Sign in</a></li>
+                    <li><a id="login" href = '/login'><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <% } else { %>
+                    <li><a href = '/logout' style="pointer-events: none;  cursor: default"><%= user.username%></a></li>
+                    <li><a href = '/logout'><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                    <li><a href = '/user_profile'><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                    <% } %>
+                </ul>
+
+
+
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+</header>
+
+
+
+
+
+<div class='container' style="margin-top : 20px;">
+    <div class="jumbotron col-lg-12  " >
+
+        <div class="panel panel-default">
+            <div class="panel-heading text-center"><%= ar.aname %></div>
+            <div class="panel-body">
+
+                <div class=" col-lg-8  " >
+                    <%=ar.asummary%>
+
+                </div>
+                <div class=" col-lg-4  " >
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <% if (ar.image) { %>
+                            <img src='data:image/jpg;base64,<%= ar.image %>' class="profileimage" width=200 height=240 alt="left" /><br>
+                            <% } else { %>
+                            <p>
+                                <img src='/images/null.gif' class="profileimage"  width=120 height=120 alt="left" /><br>
+                            </p>
+                            <% } %>
+                        </div>
+                        <div class="panel-body">
+                            <ul>
+                                <li><label>Category: </lable><%= ar.acategory %></li>
+                                <li><label>Autor: </lable><%= ar.autor %></li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <%=ar.atext%>
+
+
+
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+
 </div>
+
+<script src="/javascripts/check.js"></script>
+
 
 </body>
 </html>
