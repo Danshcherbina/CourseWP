@@ -7,7 +7,7 @@ var crypto = require('crypto');
 var UserTemplate = require('../user_template').UserTemplate;
 var ArticleTemplate = require('../article_template').ArticleTemplate;
 
-var mongo_db ='mongodb://garmrr:kazzak80@ds129179.mlab.com:29179/heroku_xvs5zgf6/kursach';
+var mongo_db ='mongodb://lordik:kazzak80@ds157839.mlab.com:57839/heroku_lv969s4g/kursach';
 //var mongo_db = 'mongodb://localhost/kursach';
 
 
