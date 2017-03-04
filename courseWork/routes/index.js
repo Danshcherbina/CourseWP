@@ -123,7 +123,7 @@ router.get('/articles', function(req,res,next){
 
 /* GET register page. */
 router.get('/register', (req, res) => {
-    res.render('register',{errorMessage : 0 , csrfToken : req.csrfToken() });
+    res.render('register',{errorMessage : 0 , csrfToken : req.csrfToken()});
 });
 
 router.post('/articles/:title', function(req,res){
@@ -180,8 +180,6 @@ router.post('/update_article/articles/:title',(req,res) =>{
     var temp = '/articles/'+ req.params.title;
 	if(req.body.acategory){
 
-    var aObj = req.files.image;
-    var base64String = aObj.data.toString('base64');
     //	if (!base64String) base64String=req.user.image;
 
     ArticleTemplate.findOneAndUpdate({address : temp},{
