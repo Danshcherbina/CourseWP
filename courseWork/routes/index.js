@@ -7,9 +7,8 @@ var crypto = require('crypto');
 var UserTemplate = require('../user_template').UserTemplate;
 var ArticleTemplate = require('../article_template').ArticleTemplate;
 
-var mongo_db ='mongodb://lordik:kazzak80@ds157839.mlab.com:57839/heroku_lv969s4g/kursach';
-//var mongo_db = 'mongodb://localhost/kursach';
-
+var mongo_db = 'mongodb://localhost/kursach';
+var csrf = require('csurf');
 
 mongoose.connect(mongo_db);
 
@@ -38,7 +37,7 @@ router.use(session({
 router.use(passport.initialize());
 router.use(passport.session());
 
-
+router.use(csrf());
 
 passport.serializeUser(function(user, done) {
     done(null, user._id);
@@ -90,7 +89,7 @@ function hash(pass){
 /* GET home page. */
 
 router.get('/', function(req, res, next) {
-    res.render('main', {user : req.user});
+    res.render('main', {user : req.user , csrfToken : req.csrfToken()});
 });
 
 router.get('/new_article', function(req, res, next) {
@@ -105,7 +104,7 @@ router.get('/new_article', function(req, res, next) {
 
 
 
-                    res.render('new_article', {user : req.user, articles : articles, errorMessage:0});
+                    res.render('new_article', {user : req.user , csrfToken : req.csrfToken() , articles : articles, errorMessage:0});
                 }
 
             })
@@ -117,14 +116,14 @@ router.get('/articles', function(req,res,next){
         .exec(function(err,articles){
             if(err){res.send('err');}else{
                 var list="";
-                res.render('articles', {user : req.user, ar : articles, aList : list});
+                res.render('articles', {csrfToken : req.csrfToken() , user : req.user, ar : articles, aList : list});
             }
         })
 });
 
 /* GET register page. */
 router.get('/register', (req, res) => {
-    res.render('register',{errorMessage : 0 });
+    res.render('register',{errorMessage : 0 , csrfToken : req.csrfToken() });
 });
 
 router.post('/articles/:title', function(req,res){
@@ -164,7 +163,7 @@ router.get('/update_article/articles/:title', function(req,res){
 
 
 
-                                res.render('update_article', {user : req.user, articles : articles,ar : article, errorMessage:0});
+                                res.render('update_article', {user : req.user, articles : articles,ar : article , csrfToken : req.csrfToken() , errorMessage:0});
                             }
 
                         })
@@ -221,7 +220,7 @@ router.get('/articles/:title', function(req,res){
 		if(err){res.send('err occured');}
 		if(article){
 			console.log(article);
-			res.render('article', {user : req.user,ar : article});
+			res.render('article', {user : req.user,ar : article , csrfToken : req.csrfToken()});
 		}else{
 			res.send('Not found');
 		}
@@ -230,7 +229,7 @@ router.get('/articles/:title', function(req,res){
 
 /* GET login page. */
 router.get('/login', (req, res) => {
-  res.render('login');
+  res.render('login', {csrfToken : req.csrfToken()});
 });
 
 /* GET register_success page. */
@@ -261,7 +260,7 @@ router.get('/user_profile', (req, res) => {
             if(err){res.send('err');}else{
 
 
-                res.render('user_profile', {user : req.user, ar : articles});
+                res.render('user_profile', {user : req.user, ar : articles , csrfToken : req.csrfToken()});
             }
 
         })
@@ -364,7 +363,7 @@ router.get('/search', function(req, res){
 
     ArticleTemplate.find({"aname" : new RegExp(req.query.search, 'i')}).exec((err, articles) => {
         if(!err) {
-        res.render('search',{user : req.user , articles : articles})
+        res.render('search',{user : req.user , articles : articles , csrfToken : req.csrfToken()})
     } else {
         res.render('error',{error : '500: server error'})
     }
